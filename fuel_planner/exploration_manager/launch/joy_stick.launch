@@ -1,0 +1,7 @@
+<launch>
+    <node name="ctrl_joy" pkg="exploration_manager" type="mavros_joy_controller.py" output="screen"/>
+    <node name="joy_ros" pkg="joy" type="joy_node">
+        <param name="/dev" value="/dev/input/js0"/>
+    </node>
+
+</launch>

@@ -50,6 +50,15 @@ target_link_libraries(exploration_node
   # -ldw
   )
 
+add_executable(map_manager_node
+  src/map_manager_node.cpp
+  src/map_manager.cpp
+  )
+target_link_libraries(map_manager_node 
+  ${catkin_LIBRARIES}
+  # -ldw
+  )
+
 # add_library(exploration_manager
 #   src/fast_exploration_manager.cpp
 # )

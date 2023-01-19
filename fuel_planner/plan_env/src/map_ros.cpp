@@ -96,7 +96,7 @@ void MapROS::visCallback(const ros::TimerEvent& e) {
     }
   }
   // publishUnknown();
-  // publishESDF();
+  publishESDF();
 
   // publishUpdateRange();
   // publishDepth();
@@ -120,14 +120,16 @@ void MapROS::updateESDFCallback(const ros::TimerEvent& /*event*/) {
 
 void MapROS::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
                                const geometry_msgs::PoseStampedConstPtr& pose) {
-  camera_pos_(0) = pose->pose.position.x;
+  // 0.03, 0.0, 0.005
+  camera_pos_(0) = pose->pose.position.x + 0.03;
   camera_pos_(1) = pose->pose.position.y;
-  camera_pos_(2) = pose->pose.position.z;
+  camera_pos_(2) = pose->pose.position.z + 0.005;
   if (!map_->isInMap(camera_pos_))  // exceed mapped region
     return;
 
   camera_q_ = Eigen::Quaterniond(pose->pose.orientation.w, pose->pose.orientation.x,
-                                 pose->pose.orientation.y, pose->pose.orientation.z);
+                                 pose->pose.orientation.y, pose->pose.orientation.z)
+              * Eigen::Quaterniond(-0.5, 0.5, -0.5, 0.5);
   cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(img, img->encoding);
   if (img->encoding == sensor_msgs::image_encodings::TYPE_32FC1)
     (cv_ptr->image).convertTo(cv_ptr->image, CV_16UC1, k_depth_scaling_factor_);
